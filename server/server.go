@@ -74,19 +74,20 @@ func buscaCotacaoDolar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response map[string]map[string]interface{}
+	var response struct {
+		Cotacao struct {
+			Valor string `json:"bid"`
+		} `json:"USDBRL"`
+	}
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
-		log.Printf("Erro ao decodificar a resposta. Erro: %v", err)
-		http.Error(w, "Erro ao decodificar a resposta", http.StatusInternalServerError)
+		log.Printf("Erro ao decodificar o JSON: %v", err)
+		http.Error(w, "Erro ao processar resposta", http.StatusInternalServerError)
 		return
 	}
-	bid, ok := response["USDBRL"]["bid"].(string)
-	if !ok {
-		log.Println("Erro ao converter o bid para string")
-		http.Error(w, "Erro ao processar a resposta", http.StatusInternalServerError)
-		return
-	}
+
+	bid := response.Cotacao.Valor
+	log.Printf("Cotação do dólar: %s", bid)
 
 	dbCtx, dbCancel := context.WithTimeout(r.Context(), 10*time.Millisecond)
 	defer dbCancel()
