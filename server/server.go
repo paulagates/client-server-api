@@ -86,7 +86,7 @@ func buscaCotacaoDolar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"cotacao_dolar": bid})
+	json.NewEncoder(w).Encode(map[string]string{"dolar": bid})
 }
 
 func insereCotacao(db *sql.DB, valor string) error {
