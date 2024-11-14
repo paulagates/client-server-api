@@ -8,18 +8,18 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/glebarez/go-sqlite"
 )
 
 const (
-	urlBanco = "root:root@tcp(localhost:3306)/client-server-api?charset=utf8mb4&parseTime=True&loc=Local"
+	urlBanco = "file:client-server-api.db?cache=shared&_timeout=5000"
 )
 
 var db *sql.DB
 
 func main() {
 	var err error
-	db, err = sql.Open("mysql", urlBanco)
+	db, err = sql.Open("sqlite", urlBanco)
 	if err != nil {
 		log.Fatalf("Erro ao abrir o banco de dados: %v", err)
 	}
@@ -33,7 +33,7 @@ func main() {
 func preparaTabela() {
 	stmt, err := db.Prepare(`
 		CREATE TABLE IF NOT EXISTS cotacoes (
-			id INT(19) PRIMARY KEY AUTO_INCREMENT,
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			data DATETIME NOT NULL,
 			valor FLOAT NOT NULL
 		);
