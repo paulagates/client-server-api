@@ -57,12 +57,16 @@ func buscaCotacao() (bool, string) {
 		log.Printf("Não foi possível fazer a requisição. Status Code: %d", res.StatusCode)
 		return false, ""
 	}
-	var response map[string]string
+	var response struct {
+		Dolar string `json:"dolar"`
+	}
+
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		log.Printf("Não foi possível decodificar a resposta. Erro: %v", err)
 		return false, ""
 	}
-	return true, response["dolar"]
+
+	return true, response.Dolar
 
 }
